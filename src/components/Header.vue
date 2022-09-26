@@ -10,6 +10,9 @@
       <div class="flex items-center p-[10px]" :class="tasksTabColor">
         <a href="/tasks">Tasks</a>
       </div>
+      <div class="flex items-center p-[10px]" :class="pipelineEditorTabColor">
+        <a href="/pipeline-editor">Pipeline Editor</a>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +32,10 @@ export default {
       ['text-white'] : ['text-[#AEBECB]'];
     },
     tasksTabColor() {
+      return this.currentRouteName == 'TaskList' ? 
+      ['text-white'] : ['text-[#AEBECB]'];
+    },
+    pipelineEditorTabColor() {
       return this.currentRouteName == 'TaskList' ? 
       ['text-white'] : ['text-[#AEBECB]'];
     }

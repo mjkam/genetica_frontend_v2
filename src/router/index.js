@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import FileList from "../views/FileList.vue";
 import PipelineList from "../views/PipelineList.vue";
 import TaskList from "../views/TaskList.vue";
+import PipelineEditor from "../views/PipelineEditor.vue";
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: "/tasks",
     name: "TaskList",
     component: TaskList
+  },
+  {
+    path: "/pipeline-editor",
+    name: "PipelineEditor",
+    component: PipelineEditor
   },
 ]
 
