@@ -1,62 +1,72 @@
 <template>
-  <g class="node step">
-    <g class="core" transform="matrix(1, 0, 0, 1, 0, 0)" ref="file">
-      <circle cx="50" cy="50" :r="30" class="outer"></circle>
-      <circle cx="50" cy="50" :r="30" class="inner"></circle>
-      <svg class="node-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499 462.86" x="50" y="50" width="20" height="20">
-        <path :d="'M386.06,0H175V58.29l50,50V50H337.81V163.38h25l86.19.24V412.86H225V353.71l-50,50v59.15H499V112.94Zm1.75,113.45v-41l41.1,41.1Z'"></path>
+  <g :transform="`matrix(1, 0, 0, 1, ${posX}, ${posY})`">
+    <g transform="matrix(1, 0, 0, 1, 0, 0)">
+      <circle cx="0" cy="0" r="37" :fill="bigCircleFill" :stroke="bigCircleStroke" :stroke-width="bigCircleStrokeWidth"></circle>
+      <circle cx="0" cy="0" r="27.75" :fill="smallCircleFill"></circle>
+      <svg class="node-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499 462.86" y="-10" x="-11" width="20" height="20">
+        <path d="M386.06,0H175V58.29l50,50V50H337.81V163.38h25l86.19.24V412.86H225V353.71l-50,50v59.15H499V112.94Zm1.75,113.45v-41l41.1,41.1Z"></path>
         <polygon points="387.81 1.06 387.81 1.75 387.12 1.06 387.81 1.06"></polygon>
         <polygon points="290.36 231 176.68 344.68 141.32 309.32 194.64 256 0 256 0 206 194.64 206 142.32 153.68 177.68 118.32 290.36 231"></polygon>
       </svg>
-      <svg class="node-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499 462.86" x="50" y="50" width="20" height="20">
-        <polygon points="387.81 1.06 387.81 1.75 387.12 1.06 387.81 1.06"></polygon>
-        <polygon points="499 231 385.32 344.68 349.96 309.32 403.28 256 208.64 256 208.64 206 403.28 206 350.96 153.68 386.32 118.32 499 231"></polygon>
-        <path d="M187.81,163.38l77.69.22H324V112.94L211.06,0H0V462.86H324V298.5H274V412.86H50V50H162.81V163.38Zm25-90.92,41.1,41.1-41.1-.11Z"></path>
-      </svg>
+    </g>           
+    <text class="label" transform="matrix(1.75219 0 0 1.75219 0 67)">FASTQ</text>   
+
+    <g fill="#9a9a9a" transform="matrix(1, 0, 0, 1, 37, 0)">
+      <g class="io-port">
+        <circle cx="0" cy="0" r="7" class="port-handle"></circle>
+      </g>
+      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">fastq</text>
     </g>
   </g>
+
+
+  <!-- <g>
+    <circle r="51" :fill="bigCircleFill" :stroke="bigCircleStroke" :stroke-width="bigCircleStrokeWidth"/>
+    <circle r="38" :fill="smallCircleFill"/> -->
+    <!-- <path stroke="#aabbcc" stroke-width="2" d="M386.06,0H175V58.29l50,50V50H337.81V163.38h25l86.19.24V412.86H225V353.71l-50,50v59.15H499V112.94Zm1.75,113.45v-41l41.1,41.1Z"></path>
+    <polygon points="387.81 1.06 387.81 1.75 387.12 1.06 387.81 1.06"></polygon>
+    <polygon points="290.36 231 176.68 344.68 141.32 309.32 194.64 256 0 256 0 206 194.64 206 142.32 153.68 177.68 118.32 290.36 231"></polygon> -->
+    <!-- <svg  class="node-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499 462.86" y="125" x="300" width="20" height="20">
+      <path d="M386.06,0H175V58.29l50,50V50H337.81V163.38h25l86.19.24V412.86H225V353.71l-50,50v59.15H499V112.94Zm1.75,113.45v-41l41.1,41.1Z"></path>
+      <polygon points="387.81 1.06 387.81 1.75 387.12 1.06 387.81 1.06"></polygon>
+      <polygon points="290.36 231 176.68 344.68 141.32 309.32 194.64 256 0 256 0 206 194.64 206 142.32 153.68 177.68 118.32 290.36 231"></polygon>
+    </svg>
+  </g> -->
 </template>
 
 <script>
-import * as d3 from 'd3';
-
 export default {
-  name: 'File',
-  components: {
-  },
-  props: {
-    data: Object,
-  },
-  methods: {
-  },
-  mounted() {
-    const drag = d3.drag().on('start', this.dragStart).on('drag', this.dragging);
-    d3.select(this.$refs.file).call(drag);
+  props: ['posX', 'posY'],
+  data() {
+    return {
+      bigCircleFill: "#ffffff",
+      bigCircleStroke: "#9a9a9a",
+      bigCircleStrokeWidth: 2,
+      smallCircleFill: "#c3c3c3",
+      pathFill: "#333",
+      pathWidth: "3px"
+    }
   }
 }
 </script>
 
-<style>
-.outer {
-  fill: #fff;
-  stroke: #9a9a9a;
-  stroke-width: 2px;
-}
+<style scoped>
 
-.inner {
-  fill: #c3c3c3;
-  pointer-events: none;
-}
-
-.node-icon {
-  pointer-events: none;
+.input-port {
+  text-anchor: end;
+  transform: translate(-10px,0);
+  font-size: 10px;
   fill: #333;
-  stroke: #333;
-  stroke-width: 3px;
-  stroke-linecap: round;
 }
 
-.title {
+.output-port {
+  text-anchor: start;
+  transform: translate(10px,0);
+  font-size: 10px;
+  fill: #333;
+}
+
+.label {
   fill: #333;
   stroke: #fff;
   stroke-width: 4px;
@@ -66,7 +76,4 @@ export default {
   stroke-linejoin: miter;
 }
 
-.core:hover ~ .port >>> .label{
-  opacity: 1;
-}
 </style>
