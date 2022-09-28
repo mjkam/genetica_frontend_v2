@@ -18,20 +18,6 @@
       <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">fastq</text>
     </g>
   </g>
-
-
-  <!-- <g>
-    <circle r="51" :fill="bigCircleFill" :stroke="bigCircleStroke" :stroke-width="bigCircleStrokeWidth"/>
-    <circle r="38" :fill="smallCircleFill"/> -->
-    <!-- <path stroke="#aabbcc" stroke-width="2" d="M386.06,0H175V58.29l50,50V50H337.81V163.38h25l86.19.24V412.86H225V353.71l-50,50v59.15H499V112.94Zm1.75,113.45v-41l41.1,41.1Z"></path>
-    <polygon points="387.81 1.06 387.81 1.75 387.12 1.06 387.81 1.06"></polygon>
-    <polygon points="290.36 231 176.68 344.68 141.32 309.32 194.64 256 0 256 0 206 194.64 206 142.32 153.68 177.68 118.32 290.36 231"></polygon> -->
-    <!-- <svg  class="node-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 499 462.86" y="125" x="300" width="20" height="20">
-      <path d="M386.06,0H175V58.29l50,50V50H337.81V163.38h25l86.19.24V412.86H225V353.71l-50,50v59.15H499V112.94Zm1.75,113.45v-41l41.1,41.1Z"></path>
-      <polygon points="387.81 1.06 387.81 1.75 387.12 1.06 387.81 1.06"></polygon>
-      <polygon points="290.36 231 176.68 344.68 141.32 309.32 194.64 256 0 256 0 206 194.64 206 142.32 153.68 177.68 118.32 290.36 231"></polygon>
-    </svg>
-  </g> -->
 </template>
 
 <script>

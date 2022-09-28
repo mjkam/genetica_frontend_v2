@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div @mousemove="moveMan($event)">
     <svg width="1000" height="1000">
       
-      <Tool :posX="150" :posY="100"/>
-      <File :posX="300" :posY="300"/>
+      <Tool v-for="(tool, idx) in allTools" :key="idx" :toolData="tool" />
+      <!-- <File :posX="300" :posY="300"/> -->
       <!-- <path :d="d"/> -->
     </svg>
   </div>
@@ -11,11 +11,16 @@
 
 <script>
 import * as d3 from "d3";
+import { mapMutations, mapGetters } from 'vuex'
+
 import Tool from "./Tool.vue";
 import File from "./File.vue";
 
 export default {
     computed: {
+      ...mapGetters([
+        'allTools'
+      ]),
         d() {
             const link = d3.linkHorizontal()({
                 source: [100, 100],
@@ -23,6 +28,15 @@ export default {
             });
             return link;
         }
+    },
+    methods: {
+      ...mapMutations([
+        'toolMove'
+      ]),
+      moveMan(e) {
+        e.preventDefault();
+        this.toolMove(e);
+      },
     },
     components: { Tool, File }
 }

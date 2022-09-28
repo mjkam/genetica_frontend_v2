@@ -1,5 +1,8 @@
 <template>
-  <g :transform="`matrix(1, 0, 0, 1, ${posX}, ${posY})`">
+  <g
+    @mousedown="toolMouseDown($event, toolData)" 
+    @mouseup="toolMouseUp($event, toolData)"
+    :transform="`matrix(1, 0, 0, 1, ${toolData.posX}, ${toolData.posY})`">
     <g transform="matrix(1, 0, 0, 1, 0, 0)">
       <circle cx="0" cy="0" r="37" :fill="bigCircleFill" :stroke="bigCircleStroke" :stroke-width="bigCircleStrokeWidth"></circle>
       <circle cx="0" cy="0" r="27.75" :fill="smallCircleFill"></circle>
@@ -28,18 +31,30 @@
 </template>
 
 <script>
+import { mapMutations, mapGetters } from 'vuex'
+
 export default {
-  props: ['posX', 'posY'],
+  props: ['toolData'],
   data() {
     return {
       bigCircleFill: "#ffffff",
       bigCircleStroke: "#9a9a9a",
       bigCircleStrokeWidth: 2,
-      smallCircleFill: "#11a7a7"
+      smallCircleFill: "#11a7a7",
     }
   },
-  computed: {
-  }
+  methods: {
+    ...mapMutations([
+      'setMoveableTool',
+      'unsetMoveableTool',
+    ]),
+    toolMouseDown(e, tool) {
+      this.setMoveableTool(tool);
+    },
+    toolMouseUp(e, tool) {
+      this.unsetMoveableTool(tool);
+    },
+  },
 }
 </script>
 
