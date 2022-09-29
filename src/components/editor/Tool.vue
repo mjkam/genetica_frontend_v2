@@ -2,7 +2,7 @@
   <g
     @mousedown="toolMouseDown($event, toolData)" 
     @mouseup="toolMouseUp($event, toolData)"
-    :transform="`matrix(1, 0, 0, 1, ${toolData.posX}, ${toolData.posY})`">
+    :transform="`matrix(1, 0, 0, 1, ${task.posX}, ${task.posY})`">
     <g transform="matrix(1, 0, 0, 1, 0, 0)">
       <circle cx="0" cy="0" r="37" :fill="bigCircleFill" :stroke="bigCircleStroke" :stroke-width="bigCircleStrokeWidth"></circle>
       <circle cx="0" cy="0" r="27.75" :fill="smallCircleFill"></circle>
@@ -12,20 +12,26 @@
         <rect x="198.39" y="347.78" width="200" height="50"></rect>
       </svg>
     </g>
-    <text class="label" transform="matrix(1.30067 0 0 1.30067 0 67)">Sambamba Merge</text>
+    <text class="label" transform="matrix(1.30067 0 0 1.30067 0 67)">{{ toolName }}</text>
 
-    <g fill="#9a9a9a" transform="matrix(1, 0, 0, 1, -37, 0)">
+    <g
+      v-for="(p, idx) in inputPorts"
+      :key="idx" 
+      fill="#9a9a9a" :transform="`matrix(1, 0, 0, 1, ${p.posX}, ${p.posY})`">
       <g class="io-port">
         <circle cx="0" cy="0" r="7" class="port-handle"></circle>
       </g>
-      <text class="input-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">BAM files</text>
+      <text class="input-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">{{ p.label }}</text>
     </g>
 
-    <g fill="#9a9a9a" transform="matrix(1, 0, 0, 1, 37, 0)">
+    <g
+      v-for="(p, idx) in outputPorts"
+      :key="idx" 
+      fill="#9a9a9a" :transform="`matrix(1, 0, 0, 1, ${p.posX}, ${p.posY})`">
       <g class="io-port">
         <circle cx="0" cy="0" r="7" class="port-handle"></circle>
       </g>
-      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">BAM files</text>
+      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">{{ p.label }}</text>
     </g>
   </g>
 </template>
@@ -34,13 +40,27 @@
 import { mapMutations, mapGetters } from 'vuex'
 
 export default {
-  props: ['toolData'],
+  props: ['totalTools', 'task'],
   data() {
     return {
       bigCircleFill: "#ffffff",
       bigCircleStroke: "#9a9a9a",
       bigCircleStrokeWidth: 2,
       smallCircleFill: "#11a7a7",
+    }
+  },
+  computed: {
+    toolName() {
+      let foundTool = this.totalTools.find(o => o.id == this.task.toolId);
+      return foundTool.name;
+    },
+    inputPorts() {
+      let foundTool = this.totalTools.find(o => o.id == this.task.toolId);
+      return foundTool.inputPorts;
+    },
+    outputPorts() {
+      let foundTool = this.totalTools.find(o => o.id == this.task.toolId);
+      return foundTool.outputPorts;
     }
   },
   methods: {

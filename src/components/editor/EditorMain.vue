@@ -2,9 +2,9 @@
   <div @mousemove="moveMan($event)">
     <svg width="1000" height="1000">
       
-      <Tool v-for="(tool, idx) in allTools" :key="idx" :toolData="tool" />
+      <Tool v-for="(task, idx) in editingPipeline.tasks" :key="idx" :totalTools="totalTools" :task="task" />
+      <Edge v-for="(edge, idx) in editingPipeline.connectEdges" :key="idx" :totalTools="totalTools" :totalTasks="editingPipeline.tasks" :edge="edge"/>
       <!-- <File :posX="300" :posY="300"/> -->
-      <!-- <path :d="d"/> -->
     </svg>
   </div>
 </template>
@@ -15,19 +15,14 @@ import { mapMutations, mapGetters } from 'vuex'
 
 import Tool from "./Tool.vue";
 import File from "./File.vue";
+import Edge from "./Edge.vue";
 
 export default {
     computed: {
       ...mapGetters([
-        'allTools'
+        'totalTools',
+        'editingPipeline',
       ]),
-        d() {
-            const link = d3.linkHorizontal()({
-                source: [100, 100],
-                target: [400, 500]
-            });
-            return link;
-        }
     },
     methods: {
       ...mapMutations([
@@ -38,7 +33,7 @@ export default {
         this.toolMove(e);
       },
     },
-    components: { Tool, File }
+    components: { Tool, File, Edge }
 }
 </script>
 
