@@ -1,5 +1,7 @@
 <template>
-  <g :transform="`matrix(1, 0, 0, 1, ${posX}, ${posY})`">
+  <g
+    @mousedown="readyMove($event)" 
+    :transform="`matrix(1, 0, 0, 1, ${fileInfo.posX}, ${fileInfo.posY})`">
     <g transform="matrix(1, 0, 0, 1, 0, 0)">
       <circle cx="0" cy="0" r="37" :fill="bigCircleFill" :stroke="bigCircleStroke" :stroke-width="bigCircleStrokeWidth"></circle>
       <circle cx="0" cy="0" r="27.75" :fill="smallCircleFill"></circle>
@@ -11,7 +13,13 @@
     </g>           
     <text class="label" transform="matrix(1.75219 0 0 1.75219 0 67)">FASTQ</text>   
 
-    <g fill="#9a9a9a" transform="matrix(1, 0, 0, 1, 37, 0)">
+    <g v-if="ioType == 'INPUT'" fill="#9a9a9a" transform="matrix(1, 0, 0, 1, 37, 0)">
+      <g class="io-port">
+        <circle cx="0" cy="0" r="7" class="port-handle"></circle>
+      </g>
+      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">fastq</text>
+    </g>
+    <g v-if="ioType == 'OUTPUT'" fill="#9a9a9a" transform="matrix(1, 0, 0, 1, -37, 0)">
       <g class="io-port">
         <circle cx="0" cy="0" r="7" class="port-handle"></circle>
       </g>
@@ -21,8 +29,11 @@
 </template>
 
 <script>
+import { mapMutations, mapGetters } from 'vuex'
+
+
 export default {
-  props: ['posX', 'posY'],
+  props: ['fileInfo', 'ioType'],  
   data() {
     return {
       bigCircleFill: "#ffffff",
@@ -31,6 +42,22 @@ export default {
       smallCircleFill: "#c3c3c3",
       pathFill: "#333",
       pathWidth: "3px"
+    }
+  },
+  methods: {
+    ...mapMutations(['setMoveableFile']),
+    readyMove(e) {
+      let d = {
+        fileId: this.fileInfo.id,
+        taskId: this.fileInfo.taskId,
+        portId: this.fileInfo.portId,
+        originPosX: this.fileInfo.posX,
+        originPosY: this.fileInfo.posY,
+        mousePosX: e.offsetX,
+        mousePosY: e.offsetY
+      };
+      console.log(d);
+      this.setMoveableFile(d);
     }
   }
 }
