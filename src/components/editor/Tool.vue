@@ -87,7 +87,8 @@ export default {
         portPosY: this.task.posY + port.posY,
         portType: portType,
         mousePosX: e.offsetX,
-        mousePosY: e.offsetY
+        mousePosY: e.offsetY,
+        label: port.label,
       });
     }
   },
@@ -119,5 +120,6 @@ export default {
   paint-order: stroke;
   stroke-linecap: butt;
   stroke-linejoin: miter;
+  font-size: 13px;
 }
 </style>

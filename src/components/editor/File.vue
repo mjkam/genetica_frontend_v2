@@ -11,19 +11,19 @@
         <polygon points="290.36 231 176.68 344.68 141.32 309.32 194.64 256 0 256 0 206 194.64 206 142.32 153.68 177.68 118.32 290.36 231"></polygon>
       </svg>
     </g>           
-    <text class="label" transform="matrix(1.75219 0 0 1.75219 0 67)">FASTQ</text>   
+    <text class="label" transform="matrix(1.75219 0 0 1.75219 0 67)"> {{ fileInfo.label }}</text>   
 
     <g v-if="ioType == 'INPUT'" fill="#9a9a9a" transform="matrix(1, 0, 0, 1, 37, 0)">
       <g class="io-port">
         <circle cx="0" cy="0" r="7" class="port-handle"></circle>
       </g>
-      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">fastq</text>
+      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">{{ fileInfo.label }}</text>
     </g>
     <g v-if="ioType == 'OUTPUT'" fill="#9a9a9a" transform="matrix(1, 0, 0, 1, -37, 0)">
       <g class="io-port">
         <circle cx="0" cy="0" r="7" class="port-handle"></circle>
       </g>
-      <text class="output-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">fastq</text>
+      <text class="input-port" x="0" y="0" transform="matrix(1.30067 0 0 1.30067 0 0)">{{ fileInfo.label }}</text>
     </g>
   </g>
 </template>
@@ -56,7 +56,6 @@ export default {
         mousePosX: e.offsetX,
         mousePosY: e.offsetY
       };
-      console.log(d);
       this.setMoveableFile(d);
     }
   }
@@ -87,6 +86,7 @@ export default {
   paint-order: stroke;
   stroke-linecap: butt;
   stroke-linejoin: miter;
+  font-size: 9px;
 }
 
 </style>

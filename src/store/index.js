@@ -1,9 +1,14 @@
 import { createStore } from 'vuex'
+import axios from 'axios'
+
+const SERVER_URL = "http://127.0.0.1:8080";
 
 // Create a new store instance.
 const store = createStore({
   state () {
     return {
+      files: [],
+      pipelines: [],
       pipelineEditingId: 1,
       area: null,
       pt: null,
@@ -13,87 +18,88 @@ const store = createStore({
       virtualFileInfo: null,
       moveableTaskInfo: null,
       connectablePortInfo: null,
-      totalTools: [
-        {
-          "id": 1,
-          "name": "BWA MEM Bundle",
-          "command": "",
-          "image": "",
-          "circleR": 37,
-          "inputPorts": [
-            {
-              "id": 1,
-              "label": "Reference Index fasta",
-              "varName": "reference_fasta",
-              "posX": -37,
-              "posY": -17
-            },
-            {
-              "id": 2,
-              "label": "Input read 1",
-              "varName": "input_read_1",
-              "posX": -37,
-              "posY": 0
-            },
-            {
-              "id": 3,
-              "label": "Input read 2",
-              "varName": "input_read_2",
-              "posX": -37,
-              "posY": 17
-            },
-          ],
-          "outputPorts": [
-            {
-              "id": 1,
-              "label": "Aligned SAM",
-              "outputName": "",
-              "inheritProperty": true,
-              "posX": 37,
-              "posY": 0
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Samtools View",
-          "command": "",
-          "image": "",
-          "circleR": 37,
-          "inputPorts": [
-            {
-              "id": 1,
-              "label": "Aligned SAM",
-              "varName": "aligned_sam",
-              "posX": -37,
-              "posY": 0
-            },
-          ],
-          "outputPorts": [
-            {
-              "id": 1,
-              "label": "Output BAM",
-              "outputName": "",
-              "posX": 37,
-              "posY": 0
-            }
-          ]
-        }
-      ],
+      totalTools: [],
+      // totalTools: [
+      //   {
+      //     "id": 1,
+      //     "name": "BWA MEM Bundle",
+      //     "command": "",
+      //     "image": "",
+      //     "circleR": 37,
+      //     "inputPorts": [
+      //       {
+      //         "id": 1,
+      //         "label": "Reference Index fasta",
+      //         "varName": "reference_fasta",
+      //         "posX": -37,
+      //         "posY": -17
+      //       },
+      //       {
+      //         "id": 2,
+      //         "label": "Input read 1",
+      //         "varName": "input_read_1",
+      //         "posX": -37,
+      //         "posY": 0
+      //       },
+      //       {
+      //         "id": 3,
+      //         "label": "Input read 2",
+      //         "varName": "input_read_2",
+      //         "posX": -37,
+      //         "posY": 17
+      //       },
+      //     ],
+      //     "outputPorts": [
+      //       {
+      //         "id": 1,
+      //         "label": "Aligned SAM",
+      //         "outputName": "",
+      //         "inheritProperty": true,
+      //         "posX": 37,
+      //         "posY": 0
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     "id": 2,
+      //     "name": "Samtools View",
+      //     "command": "",
+      //     "image": "",
+      //     "circleR": 37,
+      //     "inputPorts": [
+      //       {
+      //         "id": 1,
+      //         "label": "Aligned SAM",
+      //         "varName": "aligned_sam",
+      //         "posX": -37,
+      //         "posY": 0
+      //       },
+      //     ],
+      //     "outputPorts": [
+      //       {
+      //         "id": 1,
+      //         "label": "Output BAM",
+      //         "outputName": "",
+      //         "posX": 37,
+      //         "posY": 0
+      //       }
+      //     ]
+      //   }
+      // ],
       editingPipeline: {
         "tasks": [
-          {
-            "id": 1,
-            "toolId": 1,
-            "posX": 10,
-            "posY": 200,
-          },
-          {
-            "id": 2,
-            "toolId": 2,
-            "posX": 400,
-            "posY": 400,
-          },
+          // {
+          //   "id": 1,
+          //   "toolId": 1,
+          //   "posX": 10,
+          //   "posY": 200,
+          // },
+          // {
+          //   "id": 2,
+          //   "toolId": 2,
+          //   "posX": 400,
+          //   "posY": 400,
+          // },
         ],
         "inputFiles": [],
         "outputFiles": [],
@@ -170,16 +176,29 @@ const store = createStore({
     },
     pt(state) {
       return state.pt;
-    }
+    },
+    files: (state) => state.files,
+    pipelines: (state) => state.pipelines,
+    tools: (state) => state.totalTools,
+    editingPipeline: state => state.editingPipeline,
   },
   mutations: {
+    setFiles(state, files) {
+      state.files = files;
+    },
+    setPipelines(state, pipelines) {
+      state.pipelines = pipelines;
+    },
+    setTools(state, tools) {
+      state.totalTools = tools;
+    },
     setArea(state, area) {
       state.area = area;
       state.pt = state.area.createSVGPoint();
     },
     addNewTool(state, info) {
       state.editingPipeline.tasks.push({
-        id: this.pipelineEditingId++,
+        id: state.pipelineEditingId++,
         toolId: info.toolId,
         posX: info.svgPosX,
         posY: info.svgPosY,
@@ -187,13 +206,16 @@ const store = createStore({
     },
     setVirtualTool(state, virtualToolInfo) {
       state.virtualTool = {
-        toolId: 1,
+        toolId: virtualToolInfo.toolId,
         posX: virtualToolInfo.posX,
         posY: virtualToolInfo.posY
       }
     },
     unsetVirtualTool(state) {
       state.virtualTool = null;
+    },
+    unsetVirtualFile(state) {
+      state.virtualFileInfo = null;
     },
     setMoveableFile(state, moveableFileInfo) {
       let idx;
@@ -210,9 +232,8 @@ const store = createStore({
         originPosX: moveableFileInfo.originPosX,
         originPosY: moveableFileInfo.originPosY,
         mousePosX: moveableFileInfo.mousePosX,
-        mousePosY: moveableFileInfo.mousePosY
+        mousePosY: moveableFileInfo.mousePosY,
       }
-      console.log(state.moveableFile);
     },
     unsetMoveableFile(state) {
       state.moveableFile = null;
@@ -225,14 +246,14 @@ const store = createStore({
         portPosY: clickPortInfo.portPosY,
         portType: clickPortInfo.portType,
         mousePosX: clickPortInfo.mousePosX,
-        mousePosY: clickPortInfo.mousePosY
+        mousePosY: clickPortInfo.mousePosY,
+        label: clickPortInfo.label,
       }
     },
     unsetConnectablePort(state) {
       if (state.newConnectEdge != null) {
-        state.newConnectEdge.id = state.pipelineEditingId;
+        state.newConnectEdge.id = state.pipelineEditingId++;
         state.editingPipeline.connectEdges.push(state.newConnectEdge);
-        state.pipelineEditingId = state.pipelineEditingId + 1;
       }
 
       if (state.virtualFileInfo != null) {
@@ -242,7 +263,8 @@ const store = createStore({
           taskId: state.virtualFileInfo.taskId,
           portId: state.virtualFileInfo.portId,
           posX: state.virtualFileInfo.posX,
-          posY: state.virtualFileInfo.posY
+          posY: state.virtualFileInfo.posY,
+          label: state.virtualFileInfo.label,
         }
 
         if (state.virtualFileInfo.portType == 'INPUT') {
@@ -364,6 +386,7 @@ const store = createStore({
             portType: state.connectablePortInfo.portType,
             posX: position.posX,
             posY: position.posY,
+            label: state.connectablePortInfo.label,
           }
         }
 
@@ -374,10 +397,36 @@ const store = createStore({
           portPosY: state.connectablePortInfo.portPosY,
           portType: state.connectablePortInfo.portType,
           mousePosX: position.posX,
-          mousePosY: position.posY
+          mousePosY: position.posY,
+          label: state.connectablePortInfo.label,
         }
       }
     },
+  },
+  actions: {
+    getFiles({ commit }) {
+      axios.get(SERVER_URL + "/files").then(function(response) {
+        console.log(response.data.files);
+        commit('setFiles', response.data.files);
+      });
+    },
+    getPipelines({ commit }) {
+      axios.get(SERVER_URL + "/pipelines").then(function(response) {
+        console.log(response.data.pipelines);
+        commit('setPipelines', response.data.pipelines);
+      });
+    },
+    getTools({ commit }) {
+      axios.get(SERVER_URL + "/tools").then(function(response) {
+        commit('setTools', response.data.tools);
+      });
+    },
+    savePipeline({ commit, state, dispatch }, name) {
+      console.log(JSON.stringify(state.editingPipeline));
+      axios.post(SERVER_URL + "/pipeline", {name: name, pipeline: state.editingPipeline}).then(function(response) {
+        console.log(response.data);
+      });
+    }
   }
 })
 export default store;

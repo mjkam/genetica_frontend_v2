@@ -9,9 +9,13 @@
     <div class="flex">  
       <div class="w-1/5 h-full border-r-[1px]">
         
-        <div class="border-b-[1px]">Pipeline List</div>
+        <div class="border-b-[1px]">Tool List</div>
         
-        <div v-for="(t, idx) in totalTools" :key="idx" @mousedown="setVirtualToolData($event, t.id)"> {{ t.name }}</div>
+        <ToolListItem v-for="(t, idx) in totalTools" :key="idx" :tool="t"/>
+        <button @click="savePipelineData">Save Pipeline</button>
+        <input type="text" @input="test" :value="t"/>
+        <h1> {{ t }} </h1>
+        <!-- <div v-for="(t, idx) in totalTools" :key="idx" @mousedown="setVirtualToolData($event, t.id)"> {{ t.name }}</div> -->
       </div>
       <div class="w-1/5">
         <EditorMain />
@@ -23,12 +27,18 @@
 
 <script>
 import EditorMain from '../components/editor/EditorMain.vue';
-import { mapMutations, mapGetters } from 'vuex'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
+import ToolListItem from '../components/editor/ToolListItem.vue';
 
 export default {
-    components: { EditorMain },
+    data() {
+      return {
+        t: ''
+      }
+    },  
+    components: { EditorMain, ToolListItem },
     computed: {
-      ...mapGetters(['virtualTool', 'totalTools', 'area', 'pt']),
+      ...mapGetters(['virtualTool', 'totalTools', 'area', 'pt', 'editingPipeline']),
       draggingNewToolStyle() {
         if (this.virtualTool != null) {
           let top = this.virtualTool.posY - 65 / 2;
@@ -39,19 +49,29 @@ export default {
       },
     },
     methods: {
+      test($event) {
+        this.t = $event.target.value;
+      },
       ...mapMutations(['setVirtualTool', 'unsetVirtualTool', 'addNewTool']),
+      ...mapActions(['getTools', 'savePipeline']),
+      savePipelineData() {
+        this.savePipeline(this.t);
+      },
       unsetVirtualToolData($event) {
-        let top = this.area.getBoundingClientRect().top;
-        let left = this.area.getBoundingClientRect().left;
-        if ($event.clientX > left) {
-          this.pt.x = $event.clientX; this.pt.y = $event.clientY;
-          var pos = this.pt.matrixTransform(this.area.getScreenCTM().inverse());
-          this.addNewTool({
-            toolId: this.virtualTool.toolId,
-            svgPosX: pos.x,
-            svgPosY: pos.y
-          });
+        if (this.virtualTool != null) {
+          let top = this.area.getBoundingClientRect().top;
+          let left = this.area.getBoundingClientRect().left;
+          if ($event.clientX > left) {
+            this.pt.x = $event.clientX; this.pt.y = $event.clientY;
+            var pos = this.pt.matrixTransform(this.area.getScreenCTM().inverse());
+            this.addNewTool({
+              toolId: this.virtualTool.toolId,
+              svgPosX: pos.x,
+              svgPosY: pos.y
+            });
+          }
         }
+        
 
         this.unsetVirtualTool();
       },
@@ -64,14 +84,17 @@ export default {
           });
         }
       },
-      setVirtualToolData($event, toolId) {
-        this.setVirtualTool({
-          toolId: toolId,
-          posX: $event.clientX,
-          posY: $event.clientY,
-        });
-      }
+      // setVirtualToolData($event, toolId) {
+      //   this.setVirtualTool({
+      //     toolId: toolId,
+      //     posX: $event.clientX,
+      //     posY: $event.clientY,
+      //   });
+      // }
     },
+    mounted() {
+      this.getTools();
+    }
 }
 </script>
 

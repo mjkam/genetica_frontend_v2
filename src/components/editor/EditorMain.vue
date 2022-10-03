@@ -58,11 +58,13 @@ export default {
         'unsetConnectablePort',
         'unsetMoveableFile',
         'setArea',
+        'unsetVirtualFile',
       ]),
       unsetAll() {
         this.unsetMoveableTool();
         this.unsetConnectablePort();
         this.unsetMoveableFile();
+        this.unsetVirtualFile();
       },  
       moveMan(e) {
         e.preventDefault();
