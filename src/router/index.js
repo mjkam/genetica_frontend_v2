@@ -3,6 +3,7 @@ import FileList from "../views/FileList.vue";
 import PipelineList from "../views/PipelineList.vue";
 import TaskList from "../views/TaskList.vue";
 import PipelineEditor from "../views/PipelineEditor.vue";
+import Upload from "../views/Upload.vue";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/pipeline-editor",
     name: "PipelineEditor",
     component: PipelineEditor
+  },
+  {
+    path: "/upload",
+    name: "Upload",
+    component: Upload
   },
 ]
 

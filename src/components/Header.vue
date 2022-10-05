@@ -36,7 +36,7 @@ export default {
       ['text-white'] : ['text-[#AEBECB]'];
     },
     pipelineEditorTabColor() {
-      return this.currentRouteName == 'TaskList' ? 
+      return this.currentRouteName == 'PipelineEditor' ? 
       ['text-white'] : ['text-[#AEBECB]'];
     }
   }

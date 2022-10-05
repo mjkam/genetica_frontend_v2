@@ -406,13 +406,11 @@ const store = createStore({
   actions: {
     getFiles({ commit }) {
       axios.get(SERVER_URL + "/files").then(function(response) {
-        console.log(response.data.files);
         commit('setFiles', response.data.files);
       });
     },
     getPipelines({ commit }) {
       axios.get(SERVER_URL + "/pipelines").then(function(response) {
-        console.log(response.data.pipelines);
         commit('setPipelines', response.data.pipelines);
       });
     },
@@ -422,7 +420,6 @@ const store = createStore({
       });
     },
     savePipeline({ commit, state, dispatch }, name) {
-      console.log(JSON.stringify(state.editingPipeline));
       axios.post(SERVER_URL + "/pipeline", {name: name, pipeline: state.editingPipeline}).then(function(response) {
         console.log(response.data);
       });
