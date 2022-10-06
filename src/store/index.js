@@ -9,6 +9,7 @@ const store = createStore({
     return {
       files: [],
       pipelines: [],
+      tasks: [],
       pipelineEditingId: 1,
       area: null,
       pt: null,
@@ -181,8 +182,12 @@ const store = createStore({
     pipelines: (state) => state.pipelines,
     tools: (state) => state.totalTools,
     editingPipeline: state => state.editingPipeline,
+    tasks: state => state.tasks,
   },
   mutations: {
+    setTasks(state, tasks) {
+      state.tasks = tasks;
+    },
     setFiles(state, files) {
       state.files = files;
     },
@@ -422,6 +427,18 @@ const store = createStore({
     savePipeline({ commit, state, dispatch }, name) {
       axios.post(SERVER_URL + "/pipeline", {name: name, pipeline: state.editingPipeline}).then(function(response) {
         console.log(response.data);
+      });
+    },
+    runPipeline({commit}, data) {
+      // console.log(data);
+      axios.post(SERVER_URL + "/pipeline/run", data).then(function(response) {
+        console.log(response.data);
+      });
+    },
+    getTasks({commit}) {
+      axios.get(SERVER_URL + "/tasks").then(function(response) {
+        console.log(response.data);
+        commit('setTasks', response.data.tasks);
       });
     }
   }

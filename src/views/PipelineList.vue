@@ -27,14 +27,16 @@
         <button class="ml-[20px] w-[100px]" @click="turnOnSelectFilePage(idx)">select File</button>
         <div class="w-[100px] ml-[20px]"> {{ d.selectedFileName }}</div>
       </div>
+      <button @click="startPipeline">Run</button>
       <button @click="cancelSelectedPipeline">cancel</button>
     </div>
 
     <div v-if="activeThird">
       <div v-for="(f, idx) in files" :key="idx" class="bg-green-300">
-        <!-- <input type="checkbox" :value="aa"/> ㅊㅔ크박스해야됌 -->
+        <input type="checkbox" :value="f.id" v-model="filesCheckbox" @change="checkBoxChange($event)"/>
         {{ f.name }}
       </div>
+      <button @click="applySelectFilePage">ok</button>
       <button @click="closeSelectFilePage">close</button>
     </div>
   </div>
@@ -51,6 +53,8 @@ export default {
       activeSecond: false,
       activeThird: false,
 
+      filesCheckbox: [],
+
       selectedPipeline: null,
       selectInputFileIdx: -1,
     }
@@ -59,21 +63,29 @@ export default {
     ...mapGetters(['pipelines', 'totalTools', 'files'])
   },
   methods: {
-    ...mapActions(['getPipelines', 'getTools', 'getFiles']),
+    ...mapActions(['getPipelines', 'getTools', 'getFiles', 'runPipeline']),
     selectPipeline(pipeline) {
       let inputFiles = [];
-      for (let inputFile of pipeline.inputFiles) {
+
+      pipeline.inputFiles.forEach((inputFile, i) => {
         let task = pipeline.tasks.find(o => o.id == inputFile.taskId)
         let tool = this.totalTools.find(o => o.id == task.toolId);
         let port = tool.inputPorts.find(o => o.id == inputFile.portId);
         inputFiles.push({
           fileId: inputFile.id,
           label: port.label,
+          selectedFileId: null,
           selectedFileName: '',
         });
-      }
+        // this.filesCheckbox[i] = false;
+      });
       this.selectedPipeline = {id: pipeline.id, name: pipeline.name, inputFiles: inputFiles};
       this.turnOnSecond();
+    },
+    checkBoxChange(event) {
+      if (this.filesCheckbox.length >= 2) {
+        this.filesCheckbox = [this.filesCheckbox[1]];
+      }
     },
     cancelSelectedPipeline() {
       this.readyToRun = null;
@@ -86,7 +98,26 @@ export default {
       this.selectInputFileIdx = inputFileIdx;
       this.turnOnThird();
     },
-    closeSelectFilePage() {
+    startPipeline() {
+      let data = {
+        pipelineId: this.selectedPipeline.id,
+        requestFiles: this.selectedPipeline.inputFiles.map(o => (
+          {inputFileId: o.fileId, userFileId: o.selectedFileId}
+        ))
+      }
+      this.runPipeline(data);
+      this.$router.push({name: 'TaskList'});
+    },
+    applySelectFilePage() {
+      if (this.filesCheckbox.length >= 1) {
+        let f = this.files.find(o => o.id == this.filesCheckbox[0]);
+        this.selectedPipeline.inputFiles[this.selectInputFileIdx].selectedFileId = f.id;
+        this.selectedPipeline.inputFiles[this.selectInputFileIdx].selectedFileName = f.name;
+      }
+      this.filesCheckbox = [];
+      this.turnOnSecond();
+    },
+    closeSelectFilePage(doApply) {
       this.selectInputFileIdx = -1;
       this.turnOnSecond();
     },
